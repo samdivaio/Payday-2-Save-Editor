@@ -56,14 +56,14 @@ class PaydaySave(OrderedDict):
         with open(filename, "wb") as file_save:
             file_save.write(bytes_total)
 
-    def change_user_id(self, new_user_id):
+    def change_user_id(self, location, new_user_id):
         with open(self.filename, "rb") as file_dec:
             file_xor = PaydaySave.__xor_stream(file_dec.read())
             file_xor = file_xor.replace(self.userID, new_user_id)
             self.payload = file_xor
             self.__verify_and_update_hashes()
 
-            f = open("newsave098.sav", "wb")
+            f = open(location + "newsave098.sav", "wb")
             f.write(PaydaySave.__xor_stream(file_xor + self.filehash))
             f.close()
 
@@ -268,7 +268,7 @@ def main():
 
             print "Check https://steamid.io/ for Steam64ID"
             new_id = raw_input("New user ID (Steam64ID): ")
-            save.change_user_id(new_id)
+            save.change_user_id(location, new_id)
             save2 = PaydaySave(location + "newsave098.sav")
             print "Old steam ID: " + save.get_id()
             print "New steam ID: " + save2.get_id()
